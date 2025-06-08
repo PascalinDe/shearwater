@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Api-Version: 1.50
+Content-Type: application/json
+Docker-Experimental: false
+Ostype: linux
+Server: Docker/28.2.2 (linux)
+Date: Sun, 15 Jun 2025 13:06:43 GMT
+Content-Length: 814
+
+{"Platform":{"Name":"Docker Engine - Community"},"Components":[{"Name":"Engine","Version":"28.2.2","Details":{"ApiVersion":"1.50","Arch":"amd64","BuildTime":"2025-05-30T12:07:26.000000000+00:00","Experimental":"false","GitCommit":"45873be","GoVersion":"go1.24.3","KernelVersion":"6.12.30-amd64","MinAPIVersion":"1.24","Os":"linux"}},{"Name":"containerd","Version":"1.7.27","Details":{"GitCommit":"05044ec0a9a75232cad458027ca83437aae3f4da"}},{"Name":"runc","Version":"1.2.5","Details":{"GitCommit":"v1.2.5-0-g59923ef"}},{"Name":"docker-init","Version":"0.19.0","Details":{"GitCommit":"de40ad0"}}],"Version":"28.2.2","ApiVersion":"1.50","MinAPIVersion":"1.24","GitCommit":"45873be","GoVersion":"go1.24.3","Os":"linux","Arch":"amd64","KernelVersion":"6.12.30-amd64","BuildTime":"2025-05-30T12:07:26.000000000+00:00"}

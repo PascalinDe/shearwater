@@ -1,0 +1,12 @@
+{
+  "headers": {
+    "Api-Version": "1.50",
+    "Content-Type": "application/json",
+    "Docker-Experimental": "false",
+    "Ostype": "linux",
+    "Server": "Docker/28.2.2 (linux)",
+    "Date": "Sun, 15 Jun 2025 13:06:44 GMT",
+    "Transfer-Encoding": "chunked"
+  },
+  "body": {}
+}

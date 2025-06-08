@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Api-Version: 1.50
+Content-Type: application/json
+Docker-Experimental: false
+Ostype: linux
+Server: Docker/28.2.2 (linux)
+Date: Sun, 15 Jun 2025 13:06:45 GMT
+Content-Length: 1843
+
+{"LayersSize":0,"Images":[],"Containers":[],"Volumes":[{"CreatedAt":"2023-05-26T13:05:41+02:00","Driver":"local","Labels":{"com.docker.volume.anonymous":""},"Mountpoint":"/var/lib/docker/volumes/242bfb50210c77a4e0f1ed4b0f840cd8f2c35310e46bb9289e0847403aab51da/_data","Name":"242bfb50210c77a4e0f1ed4b0f840cd8f2c35310e46bb9289e0847403aab51da","Options":null,"Scope":"local","UsageData":{"RefCount":0,"Size":0}},{"CreatedAt":"2023-05-26T13:05:41+02:00","Driver":"local","Labels":{"com.docker.volume.anonymous":""},"Mountpoint":"/var/lib/docker/volumes/4e624f3bf8bf83a1986012bf817c4b62ae31c64d7741198b26bf0a277960cb87/_data","Name":"4e624f3bf8bf83a1986012bf817c4b62ae31c64d7741198b26bf0a277960cb87","Options":null,"Scope":"local","UsageData":{"RefCount":0,"Size":0}},{"CreatedAt":"2023-05-26T13:05:41+02:00","Driver":"local","Labels":{"com.docker.volume.anonymous":""},"Mountpoint":"/var/lib/docker/volumes/55e7bf8fe575cee9857b6b0ad3c6d1d0b12a55f7b591e65bb3aa3f0b03048f1e/_data","Name":"55e7bf8fe575cee9857b6b0ad3c6d1d0b12a55f7b591e65bb3aa3f0b03048f1e","Options":null,"Scope":"local","UsageData":{"RefCount":0,"Size":0}},{"CreatedAt":"2023-05-26T13:05:41+02:00","Driver":"local","Labels":{"com.docker.volume.anonymous":""},"Mountpoint":"/var/lib/docker/volumes/97c9414eca460a1c1e8383961e0675c8acad9cc589beafdbadf0889b5b605892/_data","Name":"97c9414eca460a1c1e8383961e0675c8acad9cc589beafdbadf0889b5b605892","Options":null,"Scope":"local","UsageData":{"RefCount":0,"Size":0}},{"CreatedAt":"2023-05-26T13:05:41+02:00","Driver":"local","Labels":{"com.docker.volume.anonymous":""},"Mountpoint":"/var/lib/docker/volumes/c3a8c5391a41d8153b88502b99a021c95aeea705160a9c1789081fc06673bf94/_data","Name":"c3a8c5391a41d8153b88502b99a021c95aeea705160a9c1789081fc06673bf94","Options":null,"Scope":"local","UsageData":{"RefCount":0,"Size":0}}],"BuildCache":[]}
