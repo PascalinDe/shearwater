@@ -16,7 +16,7 @@
 
 
 """
-:synopsis: Main routine.
+:synopsis: Text-based user interface.
 """
 
 
@@ -25,18 +25,19 @@ import curses
 
 # third party imports
 # library specific imports
-import shearwater.tui
-import shearwater.docker
 
 
-def loop_through(stdscr):
-    """Loop through user interaction.
-
-    :param window stdscr: initial window
-    """
-    shearwater.tui.init()
-
-
-def main():
-    """Main routine."""
-    curses.wrapper(loop_through)
+def init():
+    """Initialise text-based user interface."""
+    curses.use_default_colors()
+    # initialise default colours
+    # COLOR_BLACK   0
+    # COLOR_RED     1
+    # COLOR_GREEN   2
+    # COLOR_YELLOW  3
+    # COLOR_BLUE    4
+    # COLOR_MAGENTA 5
+    # COLOR_CYAN    6
+    # COLOR_WHITE   7
+    for i in range(0, curses.COLORS):
+        curses.init_pair(i, i, -1)
