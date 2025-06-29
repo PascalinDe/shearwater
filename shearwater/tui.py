@@ -27,6 +27,18 @@ import curses
 # library specific imports
 
 
+def _addstrs(window, strs):
+    """Paint the character strings strs.
+
+    :param window window: window
+    :param list strs: character strings
+    """
+    window.erase()
+    for y, x, str_, attr in strs:
+        window.addstr(y, x, str_, attr)
+    window.refresh()
+
+
 def init():
     """Initialise text-based user interface."""
     curses.use_default_colors()
