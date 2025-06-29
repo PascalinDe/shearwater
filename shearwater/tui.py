@@ -27,6 +27,31 @@ import curses
 # library specific imports
 
 
+def display_version(window, version):
+    """Display version of Docker.
+
+    :param window window: window
+    :param dict version: version of Docker and information about the system
+    """
+    strs = []
+    for i, line in enumerate(
+        (
+            ("Platform:", version["Platform"]["Name"]),
+            ("Docker daemon version:", version["Version"]),
+            ("Docker engine API version:", version["ApiVersion"]),
+        ),
+    ):
+        strs.append((i, 0, line[0], curses.color_pair(6)))
+        strs.append(
+            (
+                i,
+                len(line[0]) + 1,
+                line[1],
+                curses.color_pair(6) | curses.A_BOLD),
+        )
+    _addstrs(window, strs)
+
+
 def _addstrs(window, strs):
     """Paint the character strings strs.
 
