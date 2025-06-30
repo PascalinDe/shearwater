@@ -35,6 +35,15 @@ def loop_through(stdscr):
     :param window stdscr: initial window
     """
     shearwater.tui.init()
+    while True:
+        response = shearwater.docker.parse_http_response(
+            shearwater.docker.send(shearwater.docker.VERSION),
+        )
+        status_code = response["start_line"].split(" ")[1]
+        if status_code == "200":
+            shearwater.tui.display_version(stdscr, response["body"])
+        else:
+            shearwater.tui.display_error(stdscr, status_code, response["body"])
 
 
 def main():
