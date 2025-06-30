@@ -52,6 +52,23 @@ def display_version(window, version):
     _addstrs(window, strs)
 
 
+def display_error(window, status_code, body):
+    """Display error.
+
+    :param window window: window
+    :param str status_code: status code
+    :param dict body: response body
+    """
+    window.erase()
+    window.addstr(
+        0,
+        0,
+        f"{status_code} {body['message']}",
+        curses.color_pair(1) | curses.A_BOLD,
+    )
+    window.refresh()
+
+
 def _addstrs(window, strs):
     """Paint the character strings strs.
 

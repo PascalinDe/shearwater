@@ -65,7 +65,7 @@ def readfile(fp):
         response.append(line)
         if line == CR_LF:
             break
-        protocol, status_code, _ = line.split(b" ")
+        protocol, status_code, _ = line.split(b" ", maxsplit=2)
         if protocol != b"HTTP/1.1":
             raise NotImplementedError
         break
