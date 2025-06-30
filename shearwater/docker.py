@@ -154,4 +154,8 @@ def parse_http_response(response):
     headers = dict(
         email.parser.BytesHeaderParser().parsebytes(headers).items()
     )
-    return {"headers": headers, "body": body}
+    return {
+        "start_line": start_line.decode(),
+        "headers": headers,
+        "body": body,
+    }
