@@ -27,49 +27,54 @@ import curses
 # library specific imports
 
 
-def display_version(window, version):
-    """Display version of Docker.
+def pprint_version(version):
+    """Pretty-print version of Docker.
 
-    :param window window: window
     :param dict version: version of Docker and information about the system
+
+    :returns: pretty-printed version of Docker
+    :rtype: list
     """
     strs = []
-    for i, line in enumerate(
+    for i, item in enumerate(
         (
             ("Platform:", version["Platform"]["Name"]),
             ("Docker daemon version:", version["Version"]),
             ("Docker engine API version:", version["ApiVersion"]),
-        ),
+        )
     ):
-        strs.append((i, 0, line[0], curses.color_pair(6)))
+        strs.append((i, 0, item[0], curses.color_pair(6)))
         strs.append(
             (
                 i,
-                len(line[0]) + 1,
-                line[1],
-                curses.color_pair(6) | curses.A_BOLD),
+                len(item[0]) + 1,
+                item[1],
+                curses.color_pair(6) | curses.A_BOLD
+            ),
         )
-    _addstrs(window, strs)
+    return strs
 
 
-def display_error(window, status_code, body):
-    """Display error.
+def pprint_error(status_code, message):
+    """Pretty-print HTTP error response.
 
-    :param window window: window
-    :param str status_code: status code
-    :param dict body: response body
+    :param str status_code: HTTP reponse status code
+    :param str message: HTTP message
+
+    :returns: pretty-printed HTTP error response
+    :rtype: list
     """
-    window.erase()
-    window.addstr(
-        0,
-        0,
-        f"{status_code} {body['message']}",
-        curses.color_pair(1) | curses.A_BOLD,
-    )
-    window.refresh()
+    return [
+        (
+            0,
+            0,
+            f"{status_code} {message}",
+            curses.color_pair(1) | curses.A_BOLD,
+        )
+    ]
 
 
-def _addstrs(window, strs):
+def addstrs(window, strs):
     """Paint the character strings strs.
 
     :param window window: window

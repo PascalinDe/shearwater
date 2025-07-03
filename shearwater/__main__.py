@@ -41,9 +41,14 @@ def loop_through(stdscr):
         )
         status_code = response["start_line"].split(" ")[1]
         if status_code == "200":
-            shearwater.tui.display_version(stdscr, response["body"])
+            strs = shearwater.tui.pprint_version(response["body"])
+            shearwater.tui.addstrs(stdscr, strs)
         else:
-            shearwater.tui.display_error(stdscr, status_code, response["body"])
+            strs = shearwater.tui.pprint_error(
+                status_code,
+                response["body"]["message"],
+            )
+            shearwater.tui.addstrs(stdscr, strs)
 
 
 def main():
