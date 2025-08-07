@@ -27,10 +27,12 @@ import curses
 # library specific imports
 
 
-def pprint_version(version):
+def pprint_version(version, y=0, x=0):
     """Pretty-print version of Docker.
 
     :param dict version: version of Docker and information about the system
+    :param int y: Y-coordinate
+    :param int x: X-coordinate
 
     :returns: pretty-printed version of Docker
     :rtype: list
@@ -43,11 +45,11 @@ def pprint_version(version):
             ("Docker engine API version:", version["ApiVersion"]),
         )
     ):
-        strs.append((i, 0, item[0], curses.color_pair(6)))
+        strs.append((y + i, x + 0, item[0], curses.color_pair(6)))
         strs.append(
             (
-                i,
-                len(item[0]) + 1,
+                y + i,
+                x + len(item[0]) + 1,
                 item[1],
                 curses.color_pair(6) | curses.A_BOLD
             ),
@@ -55,19 +57,65 @@ def pprint_version(version):
     return strs
 
 
-def pprint_error(status_code, message):
+def pprint_df(df, y=0, x=0):
+    """Pretty-print data usage information.
+
+    :param dict df: data usage information
+    :param int y: Y-coordinate
+    :param int x: X-coordinate
+
+    :returns: pretty-printed data usage information
+    :rtype: list
+    """
+    strs = [
+        (
+            y + 0,
+            x + 0,
+            "CONTAINER ID\tIMAGE\tCOMMAND\tCREATED\tSTATUS\tPORTS\tNAMES",
+            curses.color_pair(8),
+        ),
+    ]
+    for i, container in enumerate(
+            sorted(df["Containers"], key=lambda container: container["State"]),
+            start=1,
+    ):
+        pprinted_ports = []
+        for port in container["Ports"]:
+            pprinted_ip = port.get("IP", "")
+            pprinted_private_port = port["PrivatePort"]
+            pprinted_public_port = port.get("PublicPort", "")
+            pprinted_type = port["Type"]
+            pprinted_port = f"{pprinted_private_port}/{pprinted_type}"
+            if pprinted_public_port:
+                pprinted_port = f"{pprinted_public_port}->" + pprinted_port
+            if pprinted_ip:
+                pprinted_port = f"{pprinted_ip}:" + pprinted_port
+            pprinted_ports.append(pprinted_port)
+        strs.append(
+            (
+                y + i,
+                x + 0,
+                f"{container['Id'][:12]}\t{container['Image']}\t{container['Command']}\t{container['Created']}\t{container['Status']}\t{', '.join(pprinted_ports)}\t{','.join(container['Names'])}", curses.color_pair(7),  # noqa: E501
+            ),
+        )
+    return strs
+
+
+def pprint_error(status_code, message, y=0, x=0):
     """Pretty-print HTTP error response.
 
     :param str status_code: HTTP reponse status code
     :param str message: HTTP message
+    :param int y: Y-coordinate
+    :param int x: X-coordinate
 
     :returns: pretty-printed HTTP error response
     :rtype: list
     """
     return [
         (
-            0,
-            0,
+            y + 0,
+            x + 0,
             f"{status_code} {message}",
             curses.color_pair(1) | curses.A_BOLD,
         )

@@ -21,6 +21,7 @@
 
 
 # standard library imports
+import time
 import curses
 
 # third party imports
@@ -36,19 +37,30 @@ def loop_through(stdscr):
     """
     shearwater.tui.init()
     while True:
-        response = shearwater.docker.parse_http_response(
-            shearwater.docker.send(shearwater.docker.VERSION),
-        )
-        status_code = response["start_line"].split(" ")[1]
-        if status_code == "200":
-            strs = shearwater.tui.pprint_version(response["body"])
-            shearwater.tui.addstrs(stdscr, strs)
-        else:
-            strs = shearwater.tui.pprint_error(
-                status_code,
-                response["body"]["message"],
-            )
-            shearwater.tui.addstrs(stdscr, strs)
+        strs = []
+        for path in (shearwater.docker.VERSION, shearwater.docker.DF):
+            y = strs[-1][0] + 1 if strs else 0
+            try:
+                response = shearwater.docker.parse_http_response(
+                    shearwater.docker.send(path),
+                )
+            except Exception:
+                continue
+            status_code = response["start_line"].split(" ")[1]
+            if status_code == "200":
+                pprint = {
+                    shearwater.docker.VERSION: shearwater.tui.pprint_version,
+                    shearwater.docker.DF: shearwater.tui.pprint_df,
+                }[path]
+                strs += pprint(response["body"], y=y)
+            else:
+                strs += shearwater.tui.pprint_error(
+                    status_code,
+                    response["body"]["message"],
+                    y=y,
+                )
+        shearwater.tui.addstrs(stdscr, strs)
+        time.sleep(1)
 
 
 def main():
