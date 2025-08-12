@@ -31,7 +31,7 @@ import shearwater.docker
 
 
 def loop_through(stdscr):
-    """Loop through user interaction.
+    """Loop through Docker engine API calls.
 
     :param window stdscr: initial window
     """
@@ -41,24 +41,15 @@ def loop_through(stdscr):
         for path in (shearwater.docker.VERSION, shearwater.docker.DF):
             y = strs[-1][0] + 1 if strs else 0
             try:
-                response = shearwater.docker.parse_http_response(
-                    shearwater.docker.send(path),
-                )
-            except Exception:
-                continue
-            status_code = response["start_line"].split(" ")[1]
-            if status_code == "200":
+                body = shearwater.docker.call_api(path)
+            except shearwater.docker.APICallFailed as exception:
+                strs += shearwater.tui.pprint_error(str(exception), y=y)
+            else:
                 pprint = {
                     shearwater.docker.VERSION: shearwater.tui.pprint_version,
                     shearwater.docker.DF: shearwater.tui.pprint_df,
                 }[path]
-                strs += pprint(response["body"], y=y)
-            else:
-                strs += shearwater.tui.pprint_error(
-                    status_code,
-                    response["body"]["message"],
-                    y=y,
-                )
+                strs += pprint(body, y=y)
         shearwater.tui.addstrs(stdscr, strs)
         time.sleep(1)
 

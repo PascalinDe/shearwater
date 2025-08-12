@@ -47,6 +47,11 @@ EVENTS = f"{API_VERSION}/events"
 DF = f"{API_VERSION}/system/df"
 
 
+class APICallFailed(Exception):
+    """Raised when Docker API call failed."""
+    pass
+
+
 def readfile(fp):
     """Read file object associated with the socket.
 
@@ -159,3 +164,23 @@ def parse_http_response(response):
         "headers": headers,
         "body": body,
     }
+
+
+def call_api(path):
+    """Call Docker engine API.
+
+    :param str path: path
+
+    :raises Exception:
+
+    :returns: HTTP response body
+    :rtype: dict
+    """
+    try:
+        response = parse_http_response(send(path))
+    except Exception as exception:
+        raise APICallFailed("Docker engine API call failed") from exception
+    status_code = response["start_line"].split(" ")[1]
+    if not status_code == "200":
+        raise APICallFailed(f"{status_code} {response['body']['message']}")
+    return response["body"]
