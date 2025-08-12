@@ -101,22 +101,21 @@ def pprint_df(df, y=0, x=0):
     return strs
 
 
-def pprint_error(status_code, message, y=0, x=0):
-    """Pretty-print HTTP error response.
+def pprint_error(message, y=0, x=0):
+    """Pretty-print error message.
 
-    :param str status_code: HTTP reponse status code
-    :param str message: HTTP message
+    :param str message: error message
     :param int y: Y-coordinate
     :param int x: X-coordinate
 
-    :returns: pretty-printed HTTP error response
+    :returns: pretty-printed error message
     :rtype: list
     """
     return [
         (
             y + 0,
             x + 0,
-            f"{status_code} {message}",
+            message,
             curses.color_pair(1) | curses.A_BOLD,
         )
     ]
