@@ -30,7 +30,7 @@ import shearwater.tui
 import shearwater.docker
 
 
-def loop_through(stdscr):
+def loop(stdscr):
     """Loop through Docker engine API calls.
 
     :param window stdscr: initial window
@@ -56,4 +56,4 @@ def loop_through(stdscr):
 
 def main():
     """Main routine."""
-    curses.wrapper(loop_through)
+    curses.wrapper(loop)
