@@ -27,6 +27,9 @@ import curses
 # library specific imports
 
 
+NLINES_VERSION = 3
+
+
 def pprint_version(version, y=0, x=0):
     """Pretty-print version of Docker.
 
