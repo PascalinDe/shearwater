@@ -130,10 +130,8 @@ def addstrs(window, strs):
     :param window window: window
     :param list strs: character strings
     """
-    window.erase()
     for y, x, str_, attr in strs:
         window.addstr(y, x, str_, attr)
-    window.refresh()
 
 
 def init():

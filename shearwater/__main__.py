@@ -41,6 +41,7 @@ def loop(stdscr):
     }
     shearwater.tui.init()
     while True:
+        stdscr.erase()
         for path, pad in pads.items():
             try:
                 body = shearwater.docker.call_api(path)
@@ -55,6 +56,7 @@ def loop(stdscr):
                 shearwater.docker.DF: shearwater.tui.pprint_df,
             }[path]
             shearwater.tui.addstrs(pad, pprint(body))
+        stdscr.refresh()
         time.sleep(1)
 
 
