@@ -40,7 +40,9 @@ CR_LF = b"\r\n"
 DOCKER_DAEMON_SOCKET = "/var/run/docker.sock"
 API_VERSION = "/v1.49"
 
-
+# containers API
+CONTAINERS = f"{API_VERSION}/containers/json"
+# system API
 INFO = f"{API_VERSION}/info"
 VERSION = f"{API_VERSION}/version"
 EVENTS = f"{API_VERSION}/events"

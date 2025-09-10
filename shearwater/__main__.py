@@ -38,7 +38,7 @@ def loop(stdscr):
     main_win = curses.newwin(*stdscr.getmaxyx(), 0, 0)
     pads = {
         shearwater.docker.VERSION: main_win.subpad(0, 0),
-        shearwater.docker.DF: main_win.subpad(
+        shearwater.docker.CONTAINERS: main_win.subpad(
             shearwater.tui.NLINES_VERSION,
             0,
         ),
@@ -57,8 +57,11 @@ def loop(stdscr):
                 continue
             if path == shearwater.docker.VERSION:
                 strs = shearwater.tui.pprint_version(body)
-            if path == shearwater.docker.DF:
-                strs = shearwater.tui.pprint_df(body, pad.getmaxyx()[1])
+            if path == shearwater.docker.CONTAINERS:
+                strs = shearwater.tui.pprint_containers(
+                    body,
+                    pad.getmaxyx()[1],
+                )
             shearwater.tui.addstrs(pad, strs)
         main_win.refresh()
         time.sleep(1)

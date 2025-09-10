@@ -61,10 +61,10 @@ def pprint_version(version, y=0, x=0):
     return strs
 
 
-def pprint_df(df, max_x, y=0, x=0):
-    """Pretty-print data usage information.
+def pprint_containers(containers, max_x, y=0, x=0):
+    """Pretty-print list of containers.
 
-    :param dict df: data usage information
+    :param dict containers: list of containers
     :param int max_x: maximum X-coordinate
     :param int y: Y-coordinate
     :param int x: X-coordinate
@@ -93,7 +93,7 @@ def pprint_df(df, max_x, y=0, x=0):
         for i, header in enumerate(headers)
     ]
     for i, container in enumerate(
-            sorted(df["Containers"], key=lambda container: container["State"]),
+            sorted(containers, key=lambda container: container["State"]),
             start=1,
     ):
         for j, k in enumerate(
