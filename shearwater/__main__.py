@@ -35,13 +35,17 @@ def loop(stdscr):
 
     :param window stdscr: initial window
     """
+    main_win = curses.newwin(*stdscr.getmaxyx(), 0, 0)
     pads = {
-        shearwater.docker.VERSION: stdscr.subpad(0, 0),
-        shearwater.docker.DF: stdscr.subpad(shearwater.tui.NLINES_VERSION, 0),
+        shearwater.docker.VERSION: main_win.subpad(0, 0),
+        shearwater.docker.DF: main_win.subpad(
+            shearwater.tui.NLINES_VERSION,
+            0,
+        ),
     }
     shearwater.tui.init()
     while True:
-        stdscr.erase()
+        main_win.erase()
         for path, pad in pads.items():
             try:
                 body = shearwater.docker.call_api(path)
@@ -56,7 +60,7 @@ def loop(stdscr):
                 shearwater.docker.DF: shearwater.tui.pprint_df,
             }[path]
             shearwater.tui.addstrs(pad, pprint(body))
-        stdscr.refresh()
+        main_win.refresh()
         time.sleep(1)
 
 
