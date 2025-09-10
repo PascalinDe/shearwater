@@ -55,11 +55,11 @@ def loop(stdscr):
                     shearwater.tui.pprint_error(str(exception)),
                 )
                 continue
-            pprint = {
-                shearwater.docker.VERSION: shearwater.tui.pprint_version,
-                shearwater.docker.DF: shearwater.tui.pprint_df,
-            }[path]
-            shearwater.tui.addstrs(pad, pprint(body))
+            if path == shearwater.docker.VERSION:
+                strs = shearwater.tui.pprint_version(body)
+            if path == shearwater.docker.DF:
+                strs = shearwater.tui.pprint_df(body, pad.getmaxyx()[1])
+            shearwater.tui.addstrs(pad, strs)
         main_win.refresh()
         time.sleep(1)
 

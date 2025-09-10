@@ -22,6 +22,7 @@
 
 # standard library imports
 import curses
+import datetime
 
 # third party imports
 # library specific imports
@@ -60,47 +61,131 @@ def pprint_version(version, y=0, x=0):
     return strs
 
 
-def pprint_df(df, y=0, x=0):
+def pprint_df(df, max_x, y=0, x=0):
     """Pretty-print data usage information.
 
     :param dict df: data usage information
+    :param int max_x: maximum X-coordinate
     :param int y: Y-coordinate
     :param int x: X-coordinate
 
     :returns: pretty-printed data usage information
     :rtype: list
     """
+    headers = (
+        "CONTAINER ID",
+        "IMAGE",
+        "COMMAND",
+        "CREATED",
+        "STATUS",
+        "PORTS",
+        "NAMES",
+    )
+    num_chars = max_x // len(headers)
+    r = max_x - len(headers) * num_chars
     strs = [
         (
-            y + 0,
-            x + 0,
-            "CONTAINER ID\tIMAGE\tCOMMAND\tCREATED\tSTATUS\tPORTS\tNAMES",
+            y,
+            x + i * num_chars,
+            f"{header:{num_chars if i < len(headers) - 1 else num_chars + r}}",
             curses.color_pair(8),
-        ),
+        )
+        for i, header in enumerate(headers)
     ]
     for i, container in enumerate(
             sorted(df["Containers"], key=lambda container: container["State"]),
             start=1,
     ):
-        pprinted_ports = []
-        for port in container["Ports"]:
-            pprinted_ip = port.get("IP", "")
-            pprinted_private_port = port["PrivatePort"]
-            pprinted_public_port = port.get("PublicPort", "")
-            pprinted_type = port["Type"]
-            pprinted_port = f"{pprinted_private_port}/{pprinted_type}"
-            if pprinted_public_port:
-                pprinted_port = f"{pprinted_public_port}->" + pprinted_port
-            if pprinted_ip:
-                pprinted_port = f"{pprinted_ip}:" + pprinted_port
-            pprinted_ports.append(pprinted_port)
-        strs.append(
-            (
-                y + i,
-                x + 0,
-                f"{container['Id'][:12]}\t{container['Image']}\t{container['Command']}\t{container['Created']}\t{container['Status']}\t{', '.join(pprinted_ports)}\t{','.join(container['Names'])}", curses.color_pair(7),  # noqa: E501
-            ),
-        )
+        for j, k in enumerate(
+            ("Id", "Image", "Command", "Created", "Status", "Ports", "Names")
+        ):
+            if k == "Id":
+                strs.append(
+                    (
+                        y + i,
+                        x + j * num_chars,
+                        container[k][:min(12, num_chars - 1)],
+                        curses.color_pair(7),
+                    ),
+                )
+                continue
+            if k == "Created":
+                delta = (
+                    datetime.datetime.now()
+                    - datetime.datetime.fromtimestamp(container["Created"])
+                )
+                for attr in ("seconds", "minutes", "hours", "days", "weeks"):
+                    try:
+                        value = getattr(delta, attr)
+                    except AttributeError:
+                        continue
+                    if value:
+                        pprinted_created = f"{getattr(delta, attr)} {attr} ago"
+                        created = (
+                            y + i,
+                            x + j * num_chars,
+                            pprinted_created[
+                                :min(len(pprinted_created), num_chars - 1)
+                            ],
+                            curses.color_pair(7),
+                        )
+                strs.append(created)
+                continue
+            if k == "Ports":
+                pprinted_ports = ""
+                for port in container["Ports"]:
+                    pprinted_ip = port.get("IP", "")
+                    pprinted_private_port = port["PrivatePort"]
+                    pprinted_public_port = port.get("PublicPort", "")
+                    pprinted_type = port["Type"]
+                    pprinted_port = f"{pprinted_private_port}/{pprinted_type}"
+                    if pprinted_public_port:
+                        pprinted_port = (
+                            f"{pprinted_public_port}->"
+                            + pprinted_port
+                        )
+                    if pprinted_ip:
+                        pprinted_port = (
+                            f"{pprinted_ip}:"
+                            + pprinted_port
+                        )
+                    pprinted_ports = (
+                        pprinted_ports + f", {pprinted_port}"
+                        if pprinted_ports else pprinted_port
+                    )
+                strs.append(
+                    (
+                        y + i,
+                        x + j * num_chars,
+                        pprinted_ports[
+                            :min(len(pprinted_ports), num_chars - 1)
+                        ],
+                        curses.color_pair(7),
+                    ),
+                )
+                continue
+            if k == "Names":
+                pprinted_names = ",".join(container["Names"])
+                strs.append(
+                    (
+                        y + i,
+                        x + j * num_chars,
+                        pprinted_names[
+                            :min(len(pprinted_names), num_chars - 1)
+                        ],
+                        curses.color_pair(7),
+                    ),
+                )
+                continue
+            else:
+                strs.append(
+                    (
+                        y + i,
+                        x + j * num_chars,
+                        container[k][:min(len(container[k]), num_chars - 1)],
+                        curses.color_pair(7),
+                    ),
+                )
     return strs
 
 
@@ -131,7 +216,10 @@ def addstrs(window, strs):
     :param list strs: character strings
     """
     for y, x, str_, attr in strs:
-        window.addstr(y, x, str_, attr)
+        try:
+            window.addstr(y, x, str_, attr)
+        except TypeError:
+            raise SystemExit(str_)
 
 
 def init():
