@@ -165,7 +165,9 @@ def pprint_containers(containers, max_x, y=0, x=0):
                 )
                 continue
             if k == "Names":
-                pprinted_names = ",".join(container["Names"])
+                pprinted_names = ",".join(
+                    (name.strip("/") for name in container["Names"])
+                )
                 strs.append(
                     (
                         y + i,
