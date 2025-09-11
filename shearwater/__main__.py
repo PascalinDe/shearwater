@@ -35,17 +35,16 @@ def loop(stdscr):
 
     :param window stdscr: initial window
     """
-    main_win = curses.newwin(*stdscr.getmaxyx(), 0, 0)
     windows = {
-        shearwater.docker.VERSION: main_win.subwin(0, 0),
-        shearwater.docker.CONTAINERS: main_win.subwin(
+        shearwater.docker.VERSION: stdscr.subwin(0, 0),
+        shearwater.docker.CONTAINERS: stdscr.subwin(
             shearwater.tui.NLINES_VERSION,
             0,
         ),
     }
     shearwater.tui.init()
     while True:
-        main_win.erase()
+        stdscr.erase()
         for path, win in windows.items():
             try:
                 if path == shearwater.docker.CONTAINERS:
@@ -66,7 +65,7 @@ def loop(stdscr):
                     win.getmaxyx()[1],
                 )
             shearwater.tui.addstrs(win, strs)
-        main_win.refresh()
+        stdscr.refresh()
         time.sleep(1)
 
 
