@@ -239,3 +239,21 @@ def call_list_containers():
                     name.strip("/") for name in container[key]
                 ]
     return containers
+
+
+def call_version():
+    """Call version API.
+
+    :returns: version
+    :rtype: dict
+    """
+    body = call_api(VERSION)
+    version = {}
+    for k in ("Platform", "Version", "ApiVersion"):
+        if k == "Platform":
+            version[_convert_camel_to_snake(k)] = {
+                _convert_camel_to_snake("Name"): body["Platform"]["Name"]
+            }
+        else:
+            version[_convert_camel_to_snake(k)] = body[k]
+    return version

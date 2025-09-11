@@ -51,7 +51,7 @@ def loop(stdscr):
                 if path == shearwater.docker.CONTAINERS:
                     body = shearwater.docker.call_list_containers()
                 else:
-                    body = shearwater.docker.call_api(path)
+                    body = shearwater.docker.call_version()
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
                     pad,

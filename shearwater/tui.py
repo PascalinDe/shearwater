@@ -44,9 +44,9 @@ def pprint_version(version, y=0, x=0):
     strs = []
     for i, item in enumerate(
         (
-            ("Platform:", version["Platform"]["Name"]),
-            ("Docker daemon version:", version["Version"]),
-            ("Docker engine API version:", version["ApiVersion"]),
+            ("Platform:", version["platform"]["name"]),
+            ("Docker daemon version:", version["version"]),
+            ("Docker engine API version:", version["api_version"]),
         )
     ):
         strs.append((y + i, x + 0, item[0], curses.color_pair(6)))
