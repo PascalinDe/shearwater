@@ -173,7 +173,7 @@ def call_api(path):
 
     :param str path: path
 
-    :raises Exception:
+    :raises APICallFailed: if Docker engine API call failed
 
     :returns: HTTP response body
     :rtype: dict
