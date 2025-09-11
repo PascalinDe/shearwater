@@ -93,8 +93,8 @@ def pprint_containers(containers, max_x, y=0, x=0):
         for i, header in enumerate(headers)
     ]
     for i, container in enumerate(
-            containers,
-            start=1,
+        containers,
+        start=1,
     ):
         for j, k in enumerate(
             ("Id", "Image", "Command", "Created", "Status", "Ports", "Names")
