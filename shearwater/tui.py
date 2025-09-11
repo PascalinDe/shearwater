@@ -92,27 +92,23 @@ def pprint_containers(containers, max_x, y=0, x=0):
         )
         for i, header in enumerate(headers)
     ]
-    for i, container in enumerate(
-        containers,
+    for i, (id_, container) in enumerate(
+        containers.items(),
         start=1,
     ):
-        for j, k in enumerate(
-            ("Id", "Image", "Command", "Created", "Status", "Ports", "Names")
-        ):
-            if k == "Id":
-                strs.append(
-                    (
-                        y + i,
-                        x + j * num_chars,
-                        container[k][:min(12, num_chars - 1)],
-                        curses.color_pair(7),
-                    ),
-                )
-                continue
-            if k == "Created":
+        strs.append(
+            (
+                y + i,
+                x,
+                id_[:min(12, num_chars - 1)],
+                curses.color_pair(7),
+            ),
+        )
+        for j, k in enumerate(container.keys(), start=1):
+            if k == "created":
                 delta = (
                     datetime.datetime.now()
-                    - datetime.datetime.fromtimestamp(container["Created"])
+                    - datetime.datetime.fromtimestamp(container["created"])
                 )
                 for attr in ("seconds", "minutes", "hours", "days", "weeks"):
                     try:
@@ -131,22 +127,18 @@ def pprint_containers(containers, max_x, y=0, x=0):
                         )
                 strs.append(created)
                 continue
-            if k == "Ports":
+            if k == "ports":
                 pprinted_ports = ""
-                for port in container["Ports"]:
-                    pprinted_ip = port.get("IP", "")
-                    pprinted_private_port = port["PrivatePort"]
-                    pprinted_public_port = port.get("PublicPort", "")
-                    pprinted_type = port["Type"]
-                    pprinted_port = f"{pprinted_private_port}/{pprinted_type}"
-                    if pprinted_public_port:
+                for port in container["ports"]:
+                    pprinted_port = f"{port['private_port']}/{port['type']}"
+                    if port["public_port"]:
                         pprinted_port = (
-                            f"{pprinted_public_port}->"
+                            f"{port['public_port']}->"
                             + pprinted_port
                         )
-                    if pprinted_ip:
+                    if port["ip"]:
                         pprinted_port = (
-                            f"{pprinted_ip}:"
+                            f"{port['ip']}:"
                             + pprinted_port
                         )
                     pprinted_ports = (
@@ -164,10 +156,8 @@ def pprint_containers(containers, max_x, y=0, x=0):
                     ),
                 )
                 continue
-            if k == "Names":
-                pprinted_names = ",".join(
-                    (name.strip("/") for name in container["Names"])
-                )
+            if k == "names":
+                pprinted_names = ",".join(container["names"])
                 strs.append(
                     (
                         y + i,

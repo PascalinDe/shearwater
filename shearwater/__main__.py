@@ -48,7 +48,10 @@ def loop(stdscr):
         main_win.erase()
         for path, pad in pads.items():
             try:
-                body = shearwater.docker.call_api(path)
+                if path == shearwater.docker.CONTAINERS:
+                    body = shearwater.docker.call_list_containers()
+                else:
+                    body = shearwater.docker.call_api(path)
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
                     pad,

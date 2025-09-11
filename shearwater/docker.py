@@ -27,6 +27,8 @@ import select
 import socket
 import email.parser
 
+from collections import defaultdict
+
 # third party imports
 # library specific imports
 
@@ -186,3 +188,54 @@ def call_api(path):
     if not status_code == "200":
         raise APICallFailed(f"{status_code} {response['body']['message']}")
     return response["body"]
+
+
+def _convert_camel_to_snake(camel_str):
+    """Convert camel case to snake case.
+
+    :param str camel_str: camel-case string
+
+    :returns: snake-case string
+    :rtype: str
+    """
+    # acronyms should just be converted to lower case
+    if all((c.isupper() for c in camel_str)):
+        return camel_str.lower()
+    return "".join(
+        f"_{c.lower()}" if c.isupper() and i != 0 else c.lower()
+        for i, c in enumerate(camel_str)
+    )
+
+
+def call_list_containers():
+    """Call list containers API.
+
+    :returns: list of containers
+    :rtype: dict
+    """
+    body = call_api(CONTAINERS)
+    containers = defaultdict(dict)
+    for container in body:
+        id_ = container["Id"]
+        for key in (
+                "Image",
+                "Command",
+                "Created",
+                "Status",
+                "Ports",
+                "Names",
+        ):
+            if key not in ("Ports", "Names"):
+                containers[id_][_convert_camel_to_snake(key)] = container[key]
+            if key == "Ports":
+                containers[id_][_convert_camel_to_snake(key)] = [
+                    {
+                        _convert_camel_to_snake(k): port.get(k, "")
+                        for k in ("IP", "PrivatePort", "PublicPort", "Type")
+                    } for port in container["Ports"]
+                ]
+            if key == "Names":
+                containers[id_][_convert_camel_to_snake(key)] = [
+                    name.strip("/") for name in container[key]
+                ]
+    return containers
