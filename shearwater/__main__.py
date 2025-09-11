@@ -36,9 +36,9 @@ def loop(stdscr):
     :param window stdscr: initial window
     """
     main_win = curses.newwin(*stdscr.getmaxyx(), 0, 0)
-    pads = {
-        shearwater.docker.VERSION: main_win.subpad(0, 0),
-        shearwater.docker.CONTAINERS: main_win.subpad(
+    windows = {
+        shearwater.docker.VERSION: main_win.subwin(0, 0),
+        shearwater.docker.CONTAINERS: main_win.subwin(
             shearwater.tui.NLINES_VERSION,
             0,
         ),
@@ -46,7 +46,7 @@ def loop(stdscr):
     shearwater.tui.init()
     while True:
         main_win.erase()
-        for path, pad in pads.items():
+        for path, win in windows.items():
             try:
                 if path == shearwater.docker.CONTAINERS:
                     body = shearwater.docker.call_list_containers()
@@ -54,7 +54,7 @@ def loop(stdscr):
                     body = shearwater.docker.call_version()
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
-                    pad,
+                    win,
                     shearwater.tui.pprint_error(str(exception)),
                 )
                 continue
@@ -63,9 +63,9 @@ def loop(stdscr):
             if path == shearwater.docker.CONTAINERS:
                 strs = shearwater.tui.pprint_containers(
                     body,
-                    pad.getmaxyx()[1],
+                    win.getmaxyx()[1],
                 )
-            shearwater.tui.addstrs(pad, strs)
+            shearwater.tui.addstrs(win, strs)
         main_win.refresh()
         time.sleep(1)
 
