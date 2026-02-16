@@ -35,37 +35,33 @@ def loop(stdscr):
 
     :param window stdscr: initial window
     """
-    windows = {
-        shearwater.docker.VERSION: stdscr.subwin(0, 0),
-        shearwater.docker.CONTAINERS: stdscr.subwin(
-            shearwater.tui.NLINES_VERSION,
-            0,
-        ),
-    }
-    shearwater.tui.init()
+    tui = shearwater.tui.TUI(stdscr)
     while True:
+        tui.scr["std"].erase()
         stdscr.erase()
-        for path, win in windows.items():
+        for type_, subwin in tui.scr.items():
+            if type_ == "std":
+                continue
             try:
-                if path == shearwater.docker.CONTAINERS:
+                if type_ == "containers":
                     body = shearwater.docker.call_list_containers()
                 else:
                     body = shearwater.docker.call_version()
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
-                    win,
+                    subwin,
                     shearwater.tui.pprint_error(str(exception)),
                 )
                 continue
-            if path == shearwater.docker.VERSION:
+            if type_ == "version":
                 strs = shearwater.tui.pprint_version(body)
-            if path == shearwater.docker.CONTAINERS:
+            if type_ == "containers":
                 strs = shearwater.tui.pprint_containers(
                     body,
-                    win.getmaxyx()[1],
+                    subwin.getmaxyx()[1],
                 )
-            shearwater.tui.addstrs(win, strs)
-        stdscr.refresh()
+            shearwater.tui.addstrs(subwin, strs)
+        tui.scr["std"].refresh()
         time.sleep(1)
 
 

@@ -215,7 +215,7 @@ def addstrs(window, strs):
 
 
 def init():
-    """Initialise text-based user interface."""
+    """Initialise NCURSES."""
     curses.use_default_colors()
     # initialise default colours
     # COLOR_BLACK   0
@@ -229,3 +229,19 @@ def init():
     for i in range(0, 8):
         curses.init_pair(i, i, -1)
     curses.init_pair(8, 0, curses.COLOR_GREEN)
+
+
+class TUI:
+    """Text-based user interface."""
+
+    def __init__(self, stdscr):
+        """Initialise text-based user interface.
+
+        :param window stdscr: initial window
+        """
+        self.scr = {
+            "std": stdscr,
+            "version": stdscr.subwin(0, 0),
+            "containers": stdscr.subwin(NLINES_VERSION, 0),
+        }
+        init()
