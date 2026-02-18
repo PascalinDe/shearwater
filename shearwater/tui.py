@@ -110,13 +110,19 @@ def pprint_containers(containers, max_x, y=0, x=0):
                     datetime.datetime.now()
                     - datetime.datetime.fromtimestamp(container["created"])
                 )
-                for attr in ("seconds", "minutes", "hours", "days", "weeks"):
-                    try:
-                        value = getattr(delta, attr)
-                    except AttributeError:
-                        continue
+                seconds = int(
+                    delta.total_seconds()
+                )   # truncate to 'seconds' unit
+                for unit, divisor in (
+                        ("weeks", 60 * 60 * 24 * 7),
+                        ("days", 60 * 60 * 24),
+                        ("hours", 60 * 60),
+                        ("minutes", 60),
+                        ("seconds", 1),
+                ):
+                    value = seconds // divisor
                     if value:
-                        pprinted_created = f"{getattr(delta, attr)} {attr} ago"
+                        pprinted_created = f"{value} {unit} ago"
                         created = (
                             y + i,
                             x + j * num_chars,
@@ -125,6 +131,7 @@ def pprint_containers(containers, max_x, y=0, x=0):
                             ],
                             curses.color_pair(7),
                         )
+                        break   # use biggest unit
                 strs.append(created)
                 continue
             if k == "ports":
