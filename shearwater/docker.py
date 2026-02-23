@@ -124,15 +124,15 @@ def readfile(fp):
             response.append(line)
 
 
-def send(path):
+def send(url):
     """Send HTTP request on Docker daemon socket.
 
-    :param str path: path
+    :param str url: URL
 
     :returns: HTTP response
     :rtype: bytes
     """
-    request = f"GET {path} HTTP/1.1{os.linesep}Host: {HOST}{2 * os.linesep}".encode()   # noqa: E501
+    request = f"GET {url} HTTP/1.1{os.linesep}Host: {HOST}{2 * os.linesep}".encode()   # noqa: E501
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.setblocking(False)
         sock.connect(DOCKER_DAEMON_SOCKET)
@@ -170,10 +170,11 @@ def parse_http_response(response):
     }
 
 
-def call_api(path):
+def call_api(path, **parameters):
     """Call Docker engine API.
 
     :param str path: path
+    :param dict parameters: query parameters
 
     :raises APICallFailed: if Docker engine API call failed
 
@@ -181,7 +182,11 @@ def call_api(path):
     :rtype: dict
     """
     try:
-        response = parse_http_response(send(path))
+        if parameters:
+            query = "?" + "&".join(f"{k}={v}" for k, v in parameters.items())
+        else:
+            query = ""
+        response = parse_http_response(send(f"{path}{query}"))
     except Exception as exception:
         raise APICallFailed("Docker engine API call failed") from exception
     status_code = response["start_line"].split(" ")[1]
@@ -207,13 +212,15 @@ def _convert_camel_to_snake(camel_str):
     )
 
 
-def call_list_containers():
+def call_list_containers(all_=True):
     """Call list containers API.
+
+    :param bool all: toggle returning all containers on/off
 
     :returns: list of containers
     :rtype: dict
     """
-    body = call_api(CONTAINERS)
+    body = call_api(CONTAINERS, all=all_)
     containers = defaultdict(dict)
     for container in body:
         id_ = container["Id"]
