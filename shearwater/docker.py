@@ -183,10 +183,8 @@ def call_api(path, **parameters):
     """
     try:
         if parameters:
-            query = "?" + "&".join(f"{k}={v}" for k, v in parameters.items())
-        else:
-            query = ""
-        response = parse_http_response(send(f"{path}{query}"))
+            path += "?" + "&".join(f"{k}={v}" for k, v in parameters.items())
+        response = parse_http_response(send(path))
     except Exception as exception:
         raise APICallFailed("Docker engine API call failed") from exception
     status_code = response["start_line"].split(" ")[1]
