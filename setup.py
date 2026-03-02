@@ -22,7 +22,6 @@ import setuptools
 # library specific imports
 from shearwater import METADATA
 
-
 setuptools.setup(
     **METADATA,
     packages=["shearwater"],

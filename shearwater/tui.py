@@ -19,7 +19,6 @@
 :synopsis: Text-based user interface.
 """
 
-
 # standard library imports
 import curses
 import datetime
@@ -55,7 +54,7 @@ def pprint_version(version, y=0, x=0):
                 y + i,
                 x + len(item[0]) + 1,
                 item[1],
-                curses.color_pair(6) | curses.A_BOLD
+                curses.color_pair(6) | curses.A_BOLD,
             ),
         )
     return strs
@@ -100,25 +99,22 @@ def pprint_containers(containers, max_x, y=0, x=0):
             (
                 y + i,
                 x,
-                id_[:min(12, num_chars - 1)],
+                id_[: min(12, num_chars - 1)],
                 curses.color_pair(7),
             ),
         )
         for j, k in enumerate(container.keys(), start=1):
             if k == "created":
-                delta = (
-                    datetime.datetime.now()
-                    - datetime.datetime.fromtimestamp(container["created"])
+                delta = datetime.datetime.now() - datetime.datetime.fromtimestamp(
+                    container["created"]
                 )
-                seconds = int(
-                    delta.total_seconds()
-                )   # truncate to 'seconds' unit
+                seconds = int(delta.total_seconds())  # truncate to 'seconds' unit
                 for unit, divisor in (
-                        ("weeks", 60 * 60 * 24 * 7),
-                        ("days", 60 * 60 * 24),
-                        ("hours", 60 * 60),
-                        ("minutes", 60),
-                        ("seconds", 1),
+                    ("weeks", 60 * 60 * 24 * 7),
+                    ("days", 60 * 60 * 24),
+                    ("hours", 60 * 60),
+                    ("minutes", 60),
+                    ("seconds", 1),
                 ):
                     value = seconds // divisor
                     if value:
@@ -127,11 +123,11 @@ def pprint_containers(containers, max_x, y=0, x=0):
                             y + i,
                             x + j * num_chars,
                             pprinted_created[
-                                :min(len(pprinted_created), num_chars - 1)
+                                : min(len(pprinted_created), num_chars - 1)
                             ],
                             curses.color_pair(7),
                         )
-                        break   # use biggest unit
+                        break  # use biggest unit
                 strs.append(created)
                 continue
             if k == "ports":
@@ -139,26 +135,19 @@ def pprint_containers(containers, max_x, y=0, x=0):
                 for port in container["ports"]:
                     pprinted_port = f"{port['private_port']}/{port['type']}"
                     if port["public_port"]:
-                        pprinted_port = (
-                            f"{port['public_port']}->"
-                            + pprinted_port
-                        )
+                        pprinted_port = f"{port['public_port']}->" + pprinted_port
                     if port["ip"]:
-                        pprinted_port = (
-                            f"{port['ip']}:"
-                            + pprinted_port
-                        )
+                        pprinted_port = f"{port['ip']}:" + pprinted_port
                     pprinted_ports = (
                         pprinted_ports + f", {pprinted_port}"
-                        if pprinted_ports else pprinted_port
+                        if pprinted_ports
+                        else pprinted_port
                     )
                 strs.append(
                     (
                         y + i,
                         x + j * num_chars,
-                        pprinted_ports[
-                            :min(len(pprinted_ports), num_chars - 1)
-                        ],
+                        pprinted_ports[: min(len(pprinted_ports), num_chars - 1)],
                         curses.color_pair(7),
                     ),
                 )
@@ -169,9 +158,7 @@ def pprint_containers(containers, max_x, y=0, x=0):
                     (
                         y + i,
                         x + j * num_chars,
-                        pprinted_names[
-                            :min(len(pprinted_names), num_chars - 1)
-                        ],
+                        pprinted_names[: min(len(pprinted_names), num_chars - 1)],
                         curses.color_pair(7),
                     ),
                 )
@@ -181,7 +168,7 @@ def pprint_containers(containers, max_x, y=0, x=0):
                     (
                         y + i,
                         x + j * num_chars,
-                        container[k][:min(len(container[k]), num_chars - 1)],
+                        container[k][: min(len(container[k]), num_chars - 1)],
                         curses.color_pair(7),
                     ),
                 )

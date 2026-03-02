@@ -19,7 +19,6 @@
 :synopsis: Main routine.
 """
 
-
 # standard library imports
 import time
 import curses

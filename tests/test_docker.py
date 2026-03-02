@@ -19,7 +19,6 @@
 :synopsis: Docker API test cases.
 """
 
-
 # standard library imports
 import json
 import unittest
