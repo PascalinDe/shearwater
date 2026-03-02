@@ -49,7 +49,7 @@ def pprint_version(version, y=0, x=0):
             ("Docker engine API version:", version["api_version"]),
         )
     ):
-        strs.append((y + i, x + 0, item[0], curses.color_pair(6)))
+        strs.append((y + i, x, item[0], curses.color_pair(6)))
         strs.append(
             (
                 y + i,
