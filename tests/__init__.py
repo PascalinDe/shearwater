@@ -19,7 +19,6 @@
 :synopsis: Shared objects.
 """
 
-
 # standard library imports
 import pathlib
 

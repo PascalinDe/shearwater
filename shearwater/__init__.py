@@ -19,7 +19,6 @@
 :synopsis:
 """
 
-
 # standard library imports
 # third party imports
 # library specific imports

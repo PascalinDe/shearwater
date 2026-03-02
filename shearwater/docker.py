@@ -19,7 +19,6 @@
 :synopsis: Docker API.
 """
 
-
 # standard library imports
 import os
 import json
@@ -53,6 +52,7 @@ DF = f"{API_VERSION}/system/df"
 
 class APICallFailed(Exception):
     """Raised when Docker API call failed."""
+
     pass
 
 
@@ -88,10 +88,7 @@ def readfile(fp):
             break
         name, value = line.split(b":", 1)
         value = value.strip()
-        chunked_transfer = (
-            name == b"Transfer-Encoding"
-            and value == b"chunked"
-        )
+        chunked_transfer = name == b"Transfer-Encoding" and value == b"chunked"
     # read body
     if chunked_transfer:
         while True:
@@ -105,9 +102,7 @@ def readfile(fp):
             line = fp.readline()
             if not line:
                 return b"".join(response)
-            response.append(
-                line[:chunk_size] if chunk_size > 0 else line
-            )
+            response.append(line[:chunk_size] if chunk_size > 0 else line)
             if chunk_size == 0:
                 break
         # read trailer
@@ -132,7 +127,9 @@ def send(url):
     :returns: HTTP response
     :rtype: bytes
     """
-    request = f"GET {url} HTTP/1.1{os.linesep}Host: {HOST}{2 * os.linesep}".encode()   # noqa: E501
+    request = (
+        f"GET {url} HTTP/1.1{os.linesep}Host: {HOST}{2 * os.linesep}".encode()
+    )  # noqa: E501
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.setblocking(False)
         sock.connect(DOCKER_DAEMON_SOCKET)
@@ -160,9 +157,7 @@ def parse_http_response(response):
         body = response
     body = body.replace(CR_LF, b"").decode()
     body = json.loads(body) if body else {}
-    headers = dict(
-        email.parser.BytesHeaderParser().parsebytes(headers).items()
-    )
+    headers = dict(email.parser.BytesHeaderParser().parsebytes(headers).items())
     return {
         "start_line": start_line.decode(),
         "headers": headers,
@@ -223,12 +218,12 @@ def call_list_containers(all_=True):
     for container in body:
         id_ = container["Id"]
         for key in (
-                "Image",
-                "Command",
-                "Created",
-                "Status",
-                "Ports",
-                "Names",
+            "Image",
+            "Command",
+            "Created",
+            "Status",
+            "Ports",
+            "Names",
         ):
             if key not in ("Ports", "Names"):
                 containers[id_][_convert_camel_to_snake(key)] = container[key]
@@ -237,7 +232,8 @@ def call_list_containers(all_=True):
                     {
                         _convert_camel_to_snake(k): port.get(k, "")
                         for k in ("IP", "PrivatePort", "PublicPort", "Type")
-                    } for port in container["Ports"]
+                    }
+                    for port in container["Ports"]
                 ]
             if key == "Names":
                 containers[id_][_convert_camel_to_snake(key)] = [
