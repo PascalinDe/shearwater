@@ -26,7 +26,7 @@
 
 METADATA = {
     "name": "shearwater",
-    "version": "v0.2",
+    "version": "v0.3",
     "description": "",
     "author": "Carine Dengler",
     "author_email": "",

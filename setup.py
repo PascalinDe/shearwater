@@ -1,4 +1,4 @@
-#    Shearwater v0.2
+#    Shearwater v0.3
 #    Copyright (C) 2025  Carine Dengler
 #
 #    This program is free software: you can redistribute it and/or modify
