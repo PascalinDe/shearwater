@@ -1,5 +1,5 @@
 #    This file is part of Shearwater.
-#    Copyright (C) 2025  Carine Dengler
+#    Copyright (C) 2026  Carine Dengler
 #
 #    Shearwater is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,28 +26,16 @@ import select
 import socket
 import email.parser
 
-from collections import defaultdict
-
 # third party imports
 # library specific imports
 
 
 # https://github.com/python/cpython/blob/1a07a01014bde23acd2684916ef38dc0cd73c2de/Lib/multiprocessing/connection.py#L42
 HOST = "localhost"
-# https://www.rfc-editor.org/rfc/rfc2616#section-2.2
-CR_LF = b"\r\n"
-
-
 DOCKER_DAEMON_SOCKET = "/var/run/docker.sock"
 API_VERSION = "/v1.49"
-
-# containers API
-CONTAINERS = f"{API_VERSION}/containers/json"
-# system API
-INFO = f"{API_VERSION}/info"
-VERSION = f"{API_VERSION}/version"
-EVENTS = f"{API_VERSION}/events"
-DF = f"{API_VERSION}/system/df"
+# https://www.rfc-editor.org/rfc/rfc2616#section-2.2
+CR_LF = b"\r\n"
 
 
 class APICallFailed(Exception):
@@ -203,58 +191,3 @@ def _convert_camel_to_snake(camel_str):
         f"_{c.lower()}" if c.isupper() and i != 0 else c.lower()
         for i, c in enumerate(camel_str)
     )
-
-
-def call_list_containers(all_=True):
-    """Call list containers API.
-
-    :param bool all: toggle returning all containers on/off
-
-    :returns: list of containers
-    :rtype: dict
-    """
-    body = call_api(CONTAINERS, all=all_)
-    containers = defaultdict(dict)
-    for container in body:
-        id_ = container["Id"]
-        for key in (
-            "Image",
-            "Command",
-            "Created",
-            "Status",
-            "Ports",
-            "Names",
-        ):
-            if key not in ("Ports", "Names"):
-                containers[id_][_convert_camel_to_snake(key)] = container[key]
-            if key == "Ports":
-                containers[id_][_convert_camel_to_snake(key)] = [
-                    {
-                        _convert_camel_to_snake(k): port.get(k, "")
-                        for k in ("IP", "PrivatePort", "PublicPort", "Type")
-                    }
-                    for port in container["Ports"]
-                ]
-            if key == "Names":
-                containers[id_][_convert_camel_to_snake(key)] = [
-                    name.strip("/") for name in container[key]
-                ]
-    return containers
-
-
-def call_version():
-    """Call version API.
-
-    :returns: version
-    :rtype: dict
-    """
-    body = call_api(VERSION)
-    version = {}
-    for k in ("Platform", "Version", "ApiVersion"):
-        if k == "Platform":
-            version[_convert_camel_to_snake(k)] = {
-                _convert_camel_to_snake("Name"): body["Platform"]["Name"]
-            }
-        else:
-            version[_convert_camel_to_snake(k)] = body[k]
-    return version

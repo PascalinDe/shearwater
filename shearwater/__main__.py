@@ -27,6 +27,8 @@ import curses
 # library specific imports
 import shearwater.tui
 import shearwater.docker
+import shearwater.docker.system
+import shearwater.docker.containers
 
 
 def loop(stdscr):
@@ -43,9 +45,9 @@ def loop(stdscr):
                 continue
             try:
                 if type_ == "containers":
-                    body = shearwater.docker.call_list_containers()
+                    body = shearwater.docker.containers.call_list_containers()
                 else:
-                    body = shearwater.docker.call_version()
+                    body = shearwater.docker.system.call_version()
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
                     subwin,
