@@ -29,15 +29,21 @@ import shearwater.docker
 CONTAINERS = f"{shearwater.docker.API_VERSION}/containers/json"
 
 
-def call_list_containers(all_=True):
+def call_list_containers(all_=True, limit=-1):
     """Call list containers API.
 
     :param bool all: toggle returning all containers on/off
+    :param int limit: return n most recently created containers
 
     :returns: list of containers
     :rtype: dict
     """
-    body = shearwater.docker.call_api(CONTAINERS, all=all_)
+    parameters = {
+        "all": all_,
+    }
+    if limit > -1:
+        parameters["limit"] = limit
+    body = shearwater.docker.call_api(CONTAINERS, **parameters)
     containers = collections.defaultdict(dict)
     for container in body:
         id_ = container["Id"]
