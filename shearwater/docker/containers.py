@@ -29,7 +29,7 @@ import shearwater.docker
 CONTAINERS = f"{shearwater.docker.API_VERSION}/containers/json"
 
 
-def call_list_containers(all_=True, limit=-1):
+def call_list_containers(all_=False, limit=-1):
     """Call list containers API.
 
     :param bool all: toggle returning all containers on/off
