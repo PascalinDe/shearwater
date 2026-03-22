@@ -29,33 +29,43 @@ import shearwater.docker
 CONTAINERS = f"{shearwater.docker.API_VERSION}/containers/json"
 
 
-def call_list_containers(all_=False, limit=-1):
+def call_list_containers(all_=False, limit=-1, size=False):
     """Call list containers API.
 
     :param bool all: toggle returning all containers on/off
     :param int limit: return n most recently created containers
+    :param bool size: toggle returning the size of containers on/off
 
     :returns: list of containers
     :rtype: dict
     """
     parameters = {
         "all": all_,
+        "size": size,
     }
     if limit > -1:
         parameters["limit"] = limit
     body = shearwater.docker.call_api(CONTAINERS, **parameters)
     containers = collections.defaultdict(dict)
+    keys = (
+        "Image",
+        "Command",
+        "Created",
+        "Status",
+        "Ports",
+        "Names",
+    )
+    if size:
+        keys = (
+            *keys,
+            "SizeRw",
+            "SizeRootFs",
+        )
     for container in body:
         id_ = container["Id"]
-        for key in (
-            "Image",
-            "Command",
-            "Created",
-            "Status",
-            "Ports",
-            "Names",
-        ):
-            if key not in ("Ports", "Names"):
+        size = {}
+        for key in keys:
+            if key not in keys[-4:]:
                 containers[id_][shearwater.docker._convert_camel_to_snake(key)] = (
                     container[key]
                 )
@@ -71,4 +81,8 @@ def call_list_containers(all_=False, limit=-1):
                 containers[id_][shearwater.docker._convert_camel_to_snake(key)] = [
                     name.strip("/") for name in container[key]
                 ]
+            if key in ("SizeRw", "SizeRootFs"):
+                size[shearwater.docker._convert_camel_to_snake(key)] = container[key]
+        if size:
+            containers[id_]["size"] = size
     return containers

@@ -60,6 +60,15 @@ def pprint_version(version, y=0, x=0):
     return strs
 
 
+# https://stackoverflow.com/questions/1094841/get-a-human-readable-version-of-a-file-size/1094933#1094933
+def _pprint_size(size, suffix="B"):
+    for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
+        if abs(size) < 1024.0:
+            return f"{size:3.1f}{unit}{suffix}"
+        size /= 1024.0
+    return f"{size:.1f}Yi{suffix}"
+
+
 def pprint_containers(containers, max_x, y=0, x=0):
     """Pretty-print list of containers.
 
@@ -71,7 +80,7 @@ def pprint_containers(containers, max_x, y=0, x=0):
     :returns: pretty-printed data usage information
     :rtype: list
     """
-    headers = (
+    headers = [
         "CONTAINER ID",
         "IMAGE",
         "COMMAND",
@@ -79,7 +88,9 @@ def pprint_containers(containers, max_x, y=0, x=0):
         "STATUS",
         "PORTS",
         "NAMES",
-    )
+    ]
+    if "size" in list(containers.values())[0].keys():
+        headers.append("SIZE")
     num_chars = max_x // len(headers)
     r = max_x - len(headers) * num_chars
     strs = [
@@ -159,6 +170,17 @@ def pprint_containers(containers, max_x, y=0, x=0):
                         y + i,
                         x + j * num_chars,
                         pprinted_names[: min(len(pprinted_names), num_chars - 1)],
+                        curses.color_pair(7),
+                    ),
+                )
+                continue
+            if k == "size":
+                pprinted_size = f"{_pprint_size(container['size']['size_rw'])} (virtual {_pprint_size(container['size']['size_root_fs'])})"  # noqa: E501
+                strs.append(
+                    (
+                        y + i,
+                        x + j * num_chars,
+                        pprinted_size[: min(len(pprinted_size), num_chars - 1)],
                         curses.color_pair(7),
                     ),
                 )
