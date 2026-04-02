@@ -20,6 +20,7 @@
 """
 
 # standard library imports
+import json
 import collections
 
 # third party imports
@@ -29,12 +30,13 @@ import shearwater.docker
 CONTAINERS = f"{shearwater.docker.API_VERSION}/containers/json"
 
 
-def call_list_containers(all_=False, limit=-1, size=False):
+def call_list_containers(all_=False, limit=-1, size=False, **filters):
     """Call list containers API.
 
     :param bool all: toggle returning all containers on/off
     :param int limit: return n most recently created containers
     :param bool size: toggle returning the size of containers on/off
+    :param dict filters: filters to process on the container list
 
     :returns: list of containers
     :rtype: dict
@@ -42,6 +44,7 @@ def call_list_containers(all_=False, limit=-1, size=False):
     parameters = {
         "all": all_,
         "size": size,
+        "filters": json.dumps(filters),
     }
     if limit > -1:
         parameters["limit"] = limit
