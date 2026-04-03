@@ -185,15 +185,14 @@ def pprint_containers(containers, max_x, y=0, x=0):
                     ),
                 )
                 continue
-            else:
-                strs.append(
-                    (
-                        y + i,
-                        x + j * num_chars,
-                        container[k][: min(len(container[k]), num_chars - 1)],
-                        curses.color_pair(7),
-                    ),
-                )
+            strs.append(
+                (
+                    y + i,
+                    x + j * num_chars,
+                    container[k][: min(len(container[k]), num_chars - 1)],
+                    curses.color_pair(7),
+                ),
+            )
     return strs
 
 
