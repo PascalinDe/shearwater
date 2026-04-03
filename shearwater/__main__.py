@@ -39,7 +39,6 @@ def loop(stdscr):
     tui = shearwater.tui.TUI(stdscr)
     while True:
         tui.scr["std"].erase()
-        stdscr.erase()
         for type_, subwin in tui.scr.items():
             if type_ == "std":
                 continue
