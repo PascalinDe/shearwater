@@ -69,7 +69,7 @@ def call_list_containers(all_=False, limit=-1, size=False, **filters):
         if size:
             containers[id_]["size"] = {}
         for key in keys:
-            if key not in keys[-4:]:
+            if key not in ("Ports", "Names", "SizeRw", "SizeRootFs"):
                 containers[id_][shearwater.docker._convert_camel_to_snake(key)] = (
                     container[key]
                 )
