@@ -66,8 +66,6 @@ def call_list_containers(all_=False, limit=-1, size=False, **filters):
         )
     for container in body:
         id_ = container["Id"]
-        if size:
-            containers[id_]["size"] = {}
         for key in keys:
             if key == "Ports":
                 containers[id_][shearwater.docker._convert_camel_to_snake(key)] = [
@@ -84,6 +82,11 @@ def call_list_containers(all_=False, limit=-1, size=False, **filters):
                 ]
                 continue
             if key in ("SizeRw", "SizeRootFs"):
+                if "size" not in containers[id_]:
+                    containers[id_]["size"] = {
+                        shearwater.docker._convert_camel_to_snake(key): container[key]
+                    }
+                    continue
                 containers[id_]["size"][
                     shearwater.docker._convert_camel_to_snake(key)
                 ] = container[key]
