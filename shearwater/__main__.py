@@ -37,14 +37,18 @@ def loop(stdscr):
     :param window stdscr: initial window
     """
     tui = shearwater.tui.TUI(stdscr)
+    size = False
     while True:
+        ch = stdscr.getch()
+        if ord("s") == ch:
+            size = not size
         tui.scr["std"].erase()
         for type_, subwin in tui.scr.items():
             if type_ == "std":
                 continue
             try:
                 if type_ == "containers":
-                    body = shearwater.docker.containers.call_list_containers()
+                    body = shearwater.docker.containers.call_list_containers(size=size)
                 else:
                     body = shearwater.docker.system.call_version()
             except shearwater.docker.APICallFailed as exception:

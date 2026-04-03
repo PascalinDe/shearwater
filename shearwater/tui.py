@@ -231,6 +231,8 @@ def addstrs(window, strs):
 
 def init():
     """Initialise NCURSES."""
+    curses.cbreak()
+    curses.noecho()
     curses.use_default_colors()
     # initialise default colours
     # COLOR_BLACK   0
@@ -260,3 +262,4 @@ class TUI:
             "containers": stdscr.subwin(NLINES_VERSION, 0),
         }
         init()
+        self.scr["std"].nodelay(True)
