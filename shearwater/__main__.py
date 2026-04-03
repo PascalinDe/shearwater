@@ -41,11 +41,11 @@ def loop(stdscr):
     size = False
     while True:
         ch = stdscr.getch()
+        tui.scr["std"].erase()
         if ord("a") == ch:
             all_ = not all_
         if ord("s") == ch:
             size = not size
-        tui.scr["std"].erase()
         for type_, subwin in tui.scr.items():
             if type_ == "std":
                 continue
