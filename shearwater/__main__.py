@@ -38,12 +38,21 @@ def loop(stdscr):
     """
     tui = shearwater.tui.TUI(stdscr)
     all_ = False
+    limit = -1
     size = False
     while True:
         ch = stdscr.getch()
         tui.scr["std"].erase()
         if ord("a") == ch:
             all_ = not all_
+        if ord("l") == ch:
+            limit = shearwater.tui.textbox(
+                "Enter limit",
+                tui.scr["containers"],
+                1,
+                2,
+                int,
+            )
         if ord("s") == ch:
             size = not size
         for type_, subwin in tui.scr.items():
@@ -53,6 +62,7 @@ def loop(stdscr):
                 if type_ == "containers":
                     body = shearwater.docker.containers.call_list_containers(
                         all_=all_,
+                        limit=limit if not all_ else -1,
                         size=size,
                     )
                 else:
