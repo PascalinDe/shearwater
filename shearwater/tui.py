@@ -21,6 +21,7 @@
 
 # standard library imports
 import curses
+import curses.textpad
 import datetime
 
 # third party imports
@@ -246,6 +247,55 @@ def init():
     for i in range(0, 8):
         curses.init_pair(i, i, -1)
     curses.init_pair(8, 0, curses.COLOR_GREEN)
+
+
+def textbox(prompt, parent_win, nlines, ncols, validator):
+    """Handle textbox.
+
+    :param str prompt: prompt
+    :param window parent_win: parent window
+    :param int nlines: height (prompt excluded)
+    :param int ncols: width (prompt excluded)
+    :param function validator: validator
+
+    :returns: input
+    """
+    prompt = f"{prompt}: (hit Ctrl-G to send)"
+    y, x = parent_win.getparyx()
+    max_y, max_x = parent_win.getmaxyx()
+    uly = 0
+    ulx = max_x // 2 - (ncols + len(prompt)) // 2
+    lry = uly + nlines + 1 + 1
+    if lry > max_y:
+        raise ValueError(
+            f"textbox height exceeds maximum height ({lry} > {max_y})"
+        )
+    lrx = ulx + ncols + len(prompt) + 1 + 1
+    if lrx > max_x:
+        raise ValueError(f"textbox width exceeds maximum width ({lrx} > {max_x})")
+    curses.textpad.rectangle(
+        parent_win,
+        uly,
+        ulx,
+        lry,
+        lrx,
+    )
+    uly += 1
+    ulx += 1
+    parent_win.addstr(uly, ulx, prompt)
+    parent_win.refresh()
+    uly += 1
+    subwin = parent_win.subwin(
+        nlines,
+        ncols + len(prompt),
+        y + uly,
+        x + ulx,
+    )
+    textbox = curses.textpad.Textbox(subwin)
+    textbox.edit()
+    input_ = textbox.gather()
+    parent_win.erase()
+    return validator(input_)
 
 
 class TUI:
