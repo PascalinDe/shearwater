@@ -43,51 +43,55 @@ def loop(stdscr):
     size = False
     while True:
         ch = stdscr.getch()
-        tui.scr["std"].erase()
+        tui.stdscr.erase()
         if ord("a") == ch:
             all_ = not all_
         if ord("l") == ch:
             limit = shearwater.tui.textbox(
                 "Enter limit",
-                tui.scr["containers"],
+                tui.tabs["containers"],
                 1,
                 2,
                 int,
             )
         if ord("s") == ch:
             size = not size
-        for type_, subwin in tui.scr.items():
-            if type_ == "std":
-                continue
+        try:
+            body = shearwater.docker.system.call_version()
+        except shearwater.docker.APICallFailed as exception:
+            shearwater.tui.addstrs(
+                tui.header,
+                shearwater.tui.pprint.pprint_error(str(exception)),
+            )
+            continue
+        strs = shearwater.tui.pprint.pprint_version(body)
+        strs += shearwater.tui.pprint.pprint_tabs(
+            ["Containers"],
+            0,
+            y=shearwater.tui.NLINES_VERSION - 1,
+        )
+        shearwater.tui.addstrs(tui.header, strs)
+        for tab in tui.tabs:
             try:
-                if type_ == "containers":
+                if tab.type == "containers":
                     body = shearwater.docker.containers.call_list_containers(
                         all_=all_,
                         limit=limit if not all_ else -1,
                         size=size,
                     )
-                else:
-                    body = shearwater.docker.system.call_version()
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
-                    subwin,
+                    tab.subwin,
                     shearwater.tui.pprint.pprint_error(str(exception)),
                 )
                 continue
-            if type_ == "version":
-                strs = shearwater.tui.pprint.pprint_version(body)
-                strs += shearwater.tui.pprint.pprint_tabs(
-                    ["Containers"],
-                    0,
-                    y=shearwater.tui.NLINES_VERSION - 1,
-                )
-            if type_ == "containers":
+            if tab.type == "containers":
                 strs = shearwater.tui.pprint.pprint_containers(
                     body,
-                    subwin.getmaxyx()[1],
+                    tab.subwin.getmaxyx()[1],
                 )
-            shearwater.tui.addstrs(subwin, strs)
-        tui.scr["std"].refresh()
+            shearwater.tui.addstrs(tab.subwin, strs)
+        tui.stdscr.refresh()
         time.sleep(1)
 
 

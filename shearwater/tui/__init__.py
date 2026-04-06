@@ -110,6 +110,18 @@ def textbox(prompt, parent_win, nlines, ncols, validator):
     return validator(input_)
 
 
+class TUITab:
+    """Text-based user interface tab.
+
+    :param str type_: tab type
+    :param window subwin: tab sub-window
+    """
+
+    def __init__(self, type_, subwin):
+        self.type = type_
+        self.subwin = subwin
+
+
 class TUI:
     """Text-based user interface."""
 
@@ -118,10 +130,10 @@ class TUI:
 
         :param window stdscr: initial window
         """
-        self.scr = {
-            "std": stdscr,
-            "version": stdscr.subwin(0, 0),
-            "containers": stdscr.subwin(NLINES_VERSION, 0),
-        }
+        self.stdscr = stdscr
+        self.stdscr.nodelay(True)
+        self.header = self.stdscr.subwin(0, 0)
+        self.tabs = [
+            TUITab("containers", self.stdscr.subwin(NLINES_VERSION, 0)),
+        ]
         init()
-        self.scr["std"].nodelay(True)
