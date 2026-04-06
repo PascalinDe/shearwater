@@ -28,7 +28,7 @@ import datetime
 # library specific imports
 
 
-NLINES_VERSION = 3
+NLINES_VERSION = 4
 
 
 def pprint_version(version, y=0, x=0):
@@ -68,6 +68,30 @@ def _pprint_size(size, suffix="B"):
             return f"{size:3.1f}{unit}{suffix}"
         size /= 1024.0
     return f"{size:.1f}Yi{suffix}"
+
+
+def pprint_tabs(tabs, curr_tab, y=0, x=0):
+    """Pretty-print tabs.
+
+    :param list tabs: tabs
+    :param int curr_tab: current tab index
+    :param int y: Y-coordinate
+    :param int x: X-coordinate
+
+    :returns: pretty-printed tabs
+    :rtype: list
+    """
+    num_chars = max((len(tab) for tab in tabs)) + 2
+    return [
+        (
+            y,
+            x + i * num_chars,
+            f"{' ' * ((num_chars - len(tab)) // 2)}{tab}{' ' * ((num_chars - len(tab)) // 2)}", # noqa: E501
+            curses.color_pair(8) if i == curr_tab else curses.color_pair(9)
+        )
+        for i, tab in enumerate(tabs)
+    ]
+    pass
 
 
 def pprint_containers(containers, max_x, y=0, x=0):
@@ -247,6 +271,7 @@ def init():
     for i in range(0, 8):
         curses.init_pair(i, i, -1)
     curses.init_pair(8, 0, curses.COLOR_GREEN)
+    curses.init_pair(9, 0, curses.COLOR_BLUE)
 
 
 def textbox(prompt, parent_win, nlines, ncols, validator):

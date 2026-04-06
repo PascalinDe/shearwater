@@ -75,6 +75,11 @@ def loop(stdscr):
                 continue
             if type_ == "version":
                 strs = shearwater.tui.pprint_version(body)
+                strs += shearwater.tui.pprint_tabs(
+                    ["Containers"],
+                    0,
+                    y=shearwater.tui.NLINES_VERSION - 1,
+                )
             if type_ == "containers":
                 strs = shearwater.tui.pprint_containers(
                     body,
