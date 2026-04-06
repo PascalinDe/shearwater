@@ -19,7 +19,6 @@
 :synopsis: Text-based user interface.
 """
 
-
 # standard library imports
 import curses
 import curses.textpad
@@ -82,9 +81,7 @@ def textbox(prompt, parent_win, nlines, ncols, validator):
     ulx = max_x // 2 - (ncols + len(prompt)) // 2
     lry = uly + nlines + 1 + 1
     if lry > max_y:
-        raise ValueError(
-            f"textbox height exceeds maximum height ({lry} > {max_y})"
-        )
+        raise ValueError(f"textbox height exceeds maximum height ({lry} > {max_y})")
     lrx = ulx + ncols + len(prompt) + 1 + 1
     if lrx > max_x:
         raise ValueError(f"textbox width exceeds maximum width ({lrx} > {max_x})")

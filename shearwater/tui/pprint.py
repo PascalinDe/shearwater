@@ -82,8 +82,8 @@ def pprint_tabs(tabs, curr_tab, y=0, x=0):
         (
             y,
             x + i * num_chars,
-            f"{' ' * ((num_chars - len(tab)) // 2)}{tab}{' ' * ((num_chars - len(tab)) // 2)}", # noqa: E501
-            curses.color_pair(8) if i == curr_tab else curses.color_pair(9)
+            f"{' ' * ((num_chars - len(tab)) // 2)}{tab}{' ' * ((num_chars - len(tab)) // 2)}",  # noqa: E501
+            curses.color_pair(8) if i == curr_tab else curses.color_pair(9),
         )
         for i, tab in enumerate(tabs)
     ]
