@@ -59,8 +59,7 @@ def init():
     # COLOR_WHITE   7
     for i in range(0, 8):
         curses.init_pair(i, i, -1)
-    curses.init_pair(8, 0, curses.COLOR_GREEN)
-    curses.init_pair(9, 0, curses.COLOR_BLUE)
+        curses.init_pair(i + 8, 0, i)
 
 
 def textbox(prompt, parent_win, nlines, ncols, validator):

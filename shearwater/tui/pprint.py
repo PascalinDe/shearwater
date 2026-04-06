@@ -83,7 +83,7 @@ def pprint_tabs(tabs, curr_tab, y=0, x=0):
             y,
             x + i * num_chars,
             f"{' ' * ((num_chars - len(tab)) // 2)}{tab}{' ' * ((num_chars - len(tab)) // 2)}",  # noqa: E501
-            curses.color_pair(8) if i == curr_tab else curses.color_pair(9),
+            curses.color_pair(10) if i == curr_tab else curses.color_pair(12),
         )
         for i, tab in enumerate(tabs)
     ]
@@ -119,7 +119,7 @@ def pprint_containers(containers, max_x, y=0, x=0):
             y,
             x + i * num_chars,
             f"{header:{num_chars if i < len(headers) - 1 else num_chars + r}}",
-            curses.color_pair(8),
+            curses.color_pair(10),
         )
         for i, header in enumerate(headers)
     ]
