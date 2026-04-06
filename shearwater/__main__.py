@@ -26,6 +26,7 @@ import curses
 # third party imports
 # library specific imports
 import shearwater.tui
+import shearwater.tui.pprint
 import shearwater.docker
 import shearwater.docker.system
 import shearwater.docker.containers
@@ -70,18 +71,18 @@ def loop(stdscr):
             except shearwater.docker.APICallFailed as exception:
                 shearwater.tui.addstrs(
                     subwin,
-                    shearwater.tui.pprint_error(str(exception)),
+                    shearwater.tui.pprint.pprint_error(str(exception)),
                 )
                 continue
             if type_ == "version":
-                strs = shearwater.tui.pprint_version(body)
-                strs += shearwater.tui.pprint_tabs(
+                strs = shearwater.tui.pprint.pprint_version(body)
+                strs += shearwater.tui.pprint.pprint_tabs(
                     ["Containers"],
                     0,
                     y=shearwater.tui.NLINES_VERSION - 1,
                 )
             if type_ == "containers":
-                strs = shearwater.tui.pprint_containers(
+                strs = shearwater.tui.pprint.pprint_containers(
                     body,
                     subwin.getmaxyx()[1],
                 )
