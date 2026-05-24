@@ -27,7 +27,7 @@ import shearwater.docker
 VERSION = f"{shearwater.docker.API_VERSION}/version"
 
 
-def call_version():
+def version():
     """Call version API.
 
     :returns: version

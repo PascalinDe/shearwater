@@ -57,7 +57,7 @@ def loop(stdscr):
         if ord("s") == ch:
             size = not size
         try:
-            body = shearwater.docker.system.call_version()
+            body = shearwater.docker.system.version()
         except shearwater.docker.APICallFailed as exception:
             shearwater.tui.addstrs(
                 tui.header,
@@ -74,7 +74,7 @@ def loop(stdscr):
         for tab in tui.tabs:
             try:
                 if tab.type == "containers":
-                    body = shearwater.docker.containers.call_list_containers(
+                    body = shearwater.docker.containers.list_containers(
                         all_=all_,
                         limit=limit if not all_ else -1,
                         size=size,
